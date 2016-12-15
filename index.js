@@ -6,9 +6,8 @@ const Hapi = require('hapi'),
   Path = require('path'),
   HapiSwagger = require('hapi-swagger'),
   Pack = require('./package'),
-  routes = require('./config/routes'),
-  nameRoute = require('./config/nameRoute');
-const Authorization = require('./classes/authClass');
+  routes = require('./config/routes');
+
 
 const server = new Hapi.Server({
   connections: {
@@ -40,7 +39,6 @@ server.register([Vision, Inert, {
   }
 });
 server.route(routes);
-server.route(nameRoute);
 
 server.start((err) => {
   if (err) {
