@@ -1,14 +1,13 @@
 'use-strict'
 // Simulates authorization and uses setTimeout for async
 class Authorization {
-  constructor(object) {
-    this.username = object.username;
-    this.password = object.password;
+  constructor() {
+
   }
-  getAuthorization() {
+  getAuthorization(object) {
     let self = this;
     return new Promise((resolve, reject) => {
-      if (this.username === 'mbrimmer' && this.password === 'password') {
+      if (object.username === 'mbrimmer' && object.password === 'password') {
         setTimeout(() => {
           return resolve({
             'Authorization': 'approved',
@@ -24,4 +23,4 @@ class Authorization {
   }
 }
 
-module.exports = Authorization;
+module.exports = new Authorization();

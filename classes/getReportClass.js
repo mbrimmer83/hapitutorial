@@ -1,37 +1,53 @@
 'use-strict'
 //Simulates returning a report object
+
 class getReport {
-  constructor(object) {
-    this.reportObject = object;
+  constructor() {
+    const cassandra = require('cassandra-driver');
+    this.client = new cassandra.Client({contactPoints: ['127.0.0.1'], keyspace: 'testspace'});
+    this.client.connect((err) => {
+      console.log('Connection to Cassandra made!');
+      if (err) {
+        console.log(err.message);
+      }
+    });
   }
-  getReport() {
+
+  getReport(object) {
     let self = this;
     return new Promise((resolve, reject) => {
-      if (self.getReportQuery()) {
-        return resolve({
-          'data': "This is the report data!",
-          'message': "Your report was successfully generated!"
+      let query = self.getReportQuery(object);
+      if (query != undefined) {
+        this.client.execute(query, [], {prepare: true}, (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return resolve({
+              'data': result,
+              'message': "Your report was successfully generated!"
+            });
+          }
         });
       } else {
-        return reject(new Error("dsReportId " + this.reportObject.dsReportId + " is an invalid id!"));
+        return reject(new Error("dsReportId " + " is an invalid id!"));
       }
 
-    })
+    });
   }
 
-  getReportQuery() {
+  getReportQuery(object) {
     const dbQueries = {
-      '1': "query would be returned to run!",
-      '2': "query would be returned to run!",
-      '3': "query would be returned to run!",
-      '4': "query would be returned to run!"
+      '1': "select * from user;",
+      '2': "select * from user;",
+      '3': "select * from user;",
+      '4': "select * from user;"
     }
-    if (dbQueries[this.reportObject.dsReportId]) {
-      return dbQueries[this.reportObject.dsReportId];
+    if (dbQueries[object.dsReportId]) {
+      return dbQueries[object.dsReportId];
     }else {
       return undefined;
     }
   }
 }
 
-module.exports = getReport;
+module.exports = new getReport();

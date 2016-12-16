@@ -1,45 +1,39 @@
 'use-strict'
 const requestParams = require('../classes/requestParamsClass'),
       Authorization = require('../classes/authClass')
-      getReport = require('../classes/getReportClass');
+      newReport = require('../classes/getReportClass');
 
 const basicRoute = {
   method: 'POST',
   path: '/api/v2.1/reports',
-  handler: (request, reply) => {
-    let newParams = new requestParams(request.payload)
-    newParams.getParams()
-    .then((response) => {
-      // console.log("First");
-      if (response.status === true) {
-        return response
-      }
-    })
-    .then((response) => {
-      // console.log("Second");
-      let auth = new Authorization(response.authObject);
-      return auth.getAuthorization();
-    })
-    .then((response) => {
-      // console.log("Third");
-      let newReport = new getReport(request.payload);
-      return newReport.getReport();
-    })
-    .then((report) => {
-      console.log("This is the response: ", report.message);
-      return reply(report).code(200).type('text/plain');
-    })
-    .catch((error) => {
-      console.log("This is the error: ", error.message);
-      console.log(error);
-      return reply(error.message).code(400);
-    })
-
+  config: {
+    handler: (request, reply) => {
+      requestParams.getParams(request.payload)
+      .then((response) => {
+        if (response.status === true) {
+          return response
+        }
+      })
+      .then((response) => {
+        return Authorization.getAuthorization(request.payload);
+      })
+      .then((response) => {
+        return newReport.getReport(request.payload);
+      })
+      .then((report) => {
+        console.log("This is the response: ", report.message);
+        return reply(report).code(200).type('text/plain');
+      })
+      .catch((error) => {
+        console.log("This is the error: ", error.message);
+        console.log(error);
+        return reply(error.message).code(400);
+      })
+    },
+    description: 'Return report route',
+    notes: 'Verify params, verify auth, and return report!',
+    tags: ['api']
   }
 };
-
-
-
-
 
 module.exports = basicRoute;

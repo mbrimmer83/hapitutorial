@@ -1,43 +1,43 @@
 'use-strict'
 // Checks to make sure all required parameters are present in the request
 class requestParams {
-  constructor(object) {
-    this.paramsObject = object
+  constructor() {
+
   }
-  checkRequestParams() {
+  checkRequestParams(object) {
     let self = this;
-    if (this.paramsObject.username != undefined && this.paramsObject != undefined && this.paramsObject.reportType != undefined && this.paramsObject.dsReportId != undefined) {
+    if (object.username != undefined && object.password != undefined && object.reportType != undefined && object.dsReportId != undefined) {
       return true;
     } else {
       return false;
     }
   }
-  getParams() {
+  getParams(object) {
     let self = this;
     return new Promise((resolve, reject) => {
-      if (self.checkRequestParams() === true) {
+      if (self.checkRequestParams(object) === true) {
         this.authObject = {
-          "username": this.paramsObject.username,
-          "password": this.paramsObject.password
+          "username": object.username,
+          "password": object.password
         };
         this.reportObject = {
-          "reportType": this.paramsObject.reportType,
-          "dsReportId": this.paramsObject.dsReportId,
-          "beginDate": this.paramsObject.beginDate || null,
-          "endDate": this.paramsObject.endDate || null
+          "reportType": object.reportType,
+          "dsReportId": object.dsReportId,
+          "beginDate": object.beginDate || null,
+          "endDate": object.endDate || null
         }
-          return resolve({
-            'message': "Parameters match!",
-            'status': true,
-            'authObject': self.authObject,
-            'reportObject': self.reportObject
-          });
+        return resolve({
+          'message': "Parameters match!",
+          'status': true,
+          'authObject': self.authObject,
+          'reportObject': self.reportObject
+        });
 
       } else {
-          return reject(new Error("Missing required parameters!", {code:400}));
+        return reject(new Error("Missing required parameters!", {code:400}));
       }
     });
   }
 }
 
-module.exports = requestParams;
+module.exports = new requestParams();

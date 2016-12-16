@@ -18,10 +18,12 @@ const server = new Hapi.Server({
     }
   }
 });
+
 server.connection({
-  port: 3030,
+  port: process.env.PORT || 3030,
   host: 'localhost'
 });
+
 const options = {
   info: {
     'title': 'Sample API',
